@@ -35,5 +35,5 @@ jobs:
           GENERIC_TEXT_API_KEY: ${{ secrets.GENERIC_TEXT_API_KEY }}
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
-        run: python hourly_publisher.py
+        run: python main.py
         
