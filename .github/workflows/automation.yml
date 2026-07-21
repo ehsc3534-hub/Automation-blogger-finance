@@ -2,8 +2,8 @@ name: Run Finance Automation Pipeline
 
 on:
   schedule:
-    - cron: '0 * * * *' # প্রতি ঘণ্টায় অটোমেটিক রান হবে
-  workflow_dispatch: # ম্যানুয়ালি রান করার বাটন পাওয়ার জন্য
+    - cron: '0 * * * *'
+  workflow_dispatch:
 
 jobs:
   run-pipeline:
@@ -26,9 +26,23 @@ jobs:
 
       - name: Run automation script
         env:
+          BLOGGER_BLOG_ID: ${{ secrets.BLOGGER_BLOG_ID }}
+          GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
+          GOOGLE_CLIENT_SECRET: ${{ secrets.GOOGLE_CLIENT_SECRET }}
+          GOOGLE_REFRESH_TOKEN: ${{ secrets.GOOGLE_REFRESH_TOKEN }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          GENERIC_TEXT_API_KEY: ${{ secrets.GENERIC_TEXT_API_KEY }}
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
-          GEMINI_TEXT_API_KEY: ${{ secrets.GEMINI_TEXT_API_KEY }}
+          PYTHONPATH: .
         run: |
+          TARGET_FILE=$(find . -name "main.py" -print -quit)
+          if [ -z "$TARGET_FILE" ]; then
+            echo "Error: main.py not found!"
+            exit 1
+          fi
+          DIR_PATH=$(dirname "$TARGET_FILE")
+          echo "Found main.py in $DIR_PATH. Running it..."
+          cd "$DIR_PATH"
           python main.py
           
