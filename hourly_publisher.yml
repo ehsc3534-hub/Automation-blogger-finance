@@ -35,5 +35,13 @@ jobs:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
           PYTHONPATH: .
-        run: python main.py
-
+        run: |
+          # এটি রুট বা যেকোনো সাব-ফোল্ডার থেকে আপনার মূল ফাইল খুঁজে বের করে রান করবে
+          FOUND_FILE=$(find . -name "main.py" -not -path "*/.*" | head -n 1)
+          if [ -z "$FOUND_FILE" ]; then
+            echo "Error: main.py file could not be found anywhere!"
+            exit 1
+          fi
+          echo "Executing file: $FOUND_FILE"
+          python "$FOUND_FILE"
+          
