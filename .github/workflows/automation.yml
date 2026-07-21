@@ -35,17 +35,5 @@ jobs:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
           PYTHONPATH: .
-        run: |
-          # রুট বা যেকোনো ফোল্ডার থেকে main.py খুঁজে বের করার বিকল্প ও নিশ্চিত কমান্ড
-          MAIN_SCRIPT=$(find . -name "main.py" | head -n 1)
-          
-          if [ -z "$MAIN_SCRIPT" ]; then
-            echo "Error: main.py truly not found in the repository!"
-            exit 1
-          fi
-          
-          echo "Found main.py at: $MAIN_SCRIPT"
-          SCRIPT_DIR=$(dirname "$MAIN_SCRIPT")
-          cd "$SCRIPT_DIR"
-          python main.py
-          
+        run: python main.py
+        
