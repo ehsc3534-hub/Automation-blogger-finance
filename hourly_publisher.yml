@@ -2,12 +2,12 @@ name: Hourly Automated Finance Publisher
 
 on:
   schedule:
-    - cron: '0 * * * *'  # Runs every hour (span_03,start_span,03,end_span)
-  workflow_dispatch:     # Manual run option (span_04,start_span,04,end_span)
+    - cron: '0 * * * *'  # Runs every hour
+  workflow_dispatch:     # Manual run option
 
 concurrency:
   group: publisher-lock
-  cancel-in-progress: false # Prevents duplicate publishing(span_55,start_span,55,end_span)
+  cancel-in-progress: false # Prevents duplicate publishing
 
 jobs:
   run-article:
@@ -36,4 +36,4 @@ jobs:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
         run: python hourly_publisher.py
-        
+
