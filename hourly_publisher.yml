@@ -38,9 +38,9 @@ jobs:
         run: |
           MAIN_PATH=$(find . -name "main.py" -print -quit)
           if [ -z "$MAIN_PATH" ]; then
-            echo "Error: main.py not found anywhere in the repository!"
+            echo "Error: main.py not found in the repository!"
             exit 1
           fi
           echo "Found main.py at: $MAIN_PATH"
-          python "$MAIN_PATH"
+          PYTHONPATH=$(dirname "$MAIN_PATH") python "$MAIN_PATH"
           
