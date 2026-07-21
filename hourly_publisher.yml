@@ -25,7 +25,7 @@ jobs:
       - name: Install Dependencies
         run: pip install -r requirements.txt
 
-      - name: Find and Run Main Script
+      - name: Locate and Execute Main Script
         env:
           BLOGGER_BLOG_ID: ${{ secrets.BLOGGER_BLOG_ID }}
           GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
@@ -36,11 +36,18 @@ jobs:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
         run: |
-          MAIN_PATH=$(find . -name "main.py" -print -quit)
-          if [ -z "$MAIN_PATH" ]; then
-            echo "Error: main.py not found in the repository!"
+          echo "Searching for main.py in the repository..."
+          TARGET_FILE=$(find . -name "main.py" -print -quit)
+          
+          if [ -z "$TARGET_FILE" ]; then
+            echo "CRITICAL ERROR: main.py is missing from the entire repository!"
             exit 1
           fi
-          echo "Found main.py at: $MAIN_PATH"
-          PYTHONPATH=$(dirname "$MAIN_PATH") python "$MAIN_PATH"
+          
+          echo "Successfully found main.py at: $TARGET_FILE"
+          DIR_NAME=$(dirname "$TARGET_FILE")
+          cd "$DIR_NAME"
+          
+          echo "Running python main.py from directory: $(pwd)"
+          python main.py
           
