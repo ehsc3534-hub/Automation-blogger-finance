@@ -36,13 +36,12 @@ jobs:
           SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
           PYTHONPATH: .
         run: |
-          TARGET_FILE=$(find . -name "main.py" -print -quit)
+          # রুট ফোল্ডার থেকে আসল main.py খুঁজবে, workflows ফোল্ডার থেকে নয়
+          TARGET_FILE=$(find . -maxdepth 3 -name "main.py" -print -quit)
           if [ -z "$TARGET_FILE" ]; then
-            echo "Error: main.py not found!"
+            echo "Error: main.py not found in project root!"
             exit 1
           fi
-          DIR_PATH=$(dirname "$TARGET_FILE")
-          echo "Found main.py in $DIR_PATH. Running it..."
-          cd "$DIR_PATH"
-          python main.py
+          echo "Running $TARGET_FILE successfully..."
+          python "$TARGET_FILE"
           
