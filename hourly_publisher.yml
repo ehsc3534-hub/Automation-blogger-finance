@@ -1,31 +1,30 @@
-name: Hourly Automated Finance Publisher
+name: Run Finance Automation Pipeline
 
 on:
   schedule:
     - cron: '0 * * * *'
   workflow_dispatch:
 
-concurrency:
-  group: publisher-lock
-  cancel-in-progress: false
-
 jobs:
-  run-article:
+  run-pipeline:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout Repository
+      - name: Checkout repository
         uses: actions/checkout@v4
 
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.10'
+          cache: 'pip'
 
-      - name: Install Dependencies
-        run: pip install -r requirements.txt
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install --no-cache-dir -r requirements.txt
 
-      - name: Locate and Execute Main Script
+      - name: Run automation script
         env:
           BLOGGER_BLOG_ID: ${{ secrets.BLOGGER_BLOG_ID }}
           GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
@@ -35,19 +34,13 @@ jobs:
           GENERIC_TEXT_API_KEY: ${{ secrets.GENERIC_TEXT_API_KEY }}
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
+          PYTHONPATH: .
         run: |
-          echo "Searching for main.py in the repository..."
           TARGET_FILE=$(find . -name "main.py" -print -quit)
-          
           if [ -z "$TARGET_FILE" ]; then
-            echo "CRITICAL ERROR: main.py is missing from the entire repository!"
+            echo "Error: main.py not found!"
             exit 1
           fi
-          
-          echo "Successfully found main.py at: $TARGET_FILE"
-          DIR_NAME=$(dirname "$TARGET_FILE")
-          cd "$DIR_NAME"
-          
-          echo "Running python main.py from directory: $(pwd)"
-          python main.py
+          echo "Running $TARGET_FILE"
+          python "$TARGET_FILE"
           
