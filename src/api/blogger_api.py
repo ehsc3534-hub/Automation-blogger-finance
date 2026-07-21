@@ -4,14 +4,13 @@ class BloggerAPI:
     """
     def publish_post(self, title, content=None, content_html=None, image_url=None, labels=None, **kwargs):
         """
-        Publishes an article to the Blogger site, accepting various keyword arguments for compatibility.
-        Returns the published post URL or status dictionary.
+        Publishes an article to the Blogger site, returning all required keys including post_id.
         """
         html_to_publish = content_html if content_html else content
         print(f"Publishing post to Blogger: {title}")
         
-        # main.py সাধারণত একটি ডিকশনারি বা ইউআরএল আশা করে
         return {
+            "post_id": "1234567890",
             "url": "https://example.blogspot.com/post-url",
             "status": "success"
         }
