@@ -1,0 +1,39 @@
+name: Hourly Automated Finance Publisher
+
+on:
+  schedule:
+    - cron: '0 * * * *'  # Runs every hour (span_03,start_span,03,end_span)
+  workflow_dispatch:     # Manual run option (span_04,start_span,04,end_span)
+
+concurrency:
+  group: publisher-lock
+  cancel-in-progress: false # Prevents duplicate publishing(span_55,start_span,55,end_span)
+
+jobs:
+  run-article:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+
+      - name: Install Dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run Automation Pipeline
+        env:
+          BLOGGER_BLOG_ID: ${{ secrets.BLOGGER_BLOG_ID }}
+          GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
+          GOOGLE_CLIENT_SECRET: ${{ secrets.GOOGLE_CLIENT_SECRET }}
+          GOOGLE_REFRESH_TOKEN: ${{ secrets.GOOGLE_REFRESH_TOKEN }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          GENERIC_TEXT_API_KEY: ${{ secrets.GENERIC_TEXT_API_KEY }}
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
+        run: python hourly_publisher.py
+        
