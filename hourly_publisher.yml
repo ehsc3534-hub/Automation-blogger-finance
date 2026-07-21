@@ -36,12 +36,17 @@ jobs:
           SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
           PYTHONPATH: .
         run: |
-          # রুট ফোল্ডার থেকে আসল main.py খুঁজবে, workflows ফোল্ডার থেকে নয়
-          TARGET_FILE=$(find . -maxdepth 3 -name "main.py" -print -quit)
+          # সব নেস্টেড ফোল্ডার বাদ দিয়ে সরাসরি রুট ফোল্ডার থেকে ফাইল খুঁজবে এবং `.github` ফোল্ডারকে স্কিন থেকে বাদ রাখবে
+          TARGET_FILE=$(find . -path "*/.github" -prune -o -name "main.py" -print | head -n 1)
+          
           if [ -z "$TARGET_FILE" ]; then
-            echo "Error: main.py not found in project root!"
+            echo "Error: main.py not found in the repository!"
             exit 1
           fi
-          echo "Running $TARGET_FILE successfully..."
-          python "$TARGET_FILE"
+          
+          echo "Found main.py at: $TARGET_FILE"
+          DIR_PATH=$(dirname "$TARGET_FILE")
+          echo "Moving to directory: $DIR_PATH and running..."
+          cd "$DIR_PATH"
+          python main.py
           
