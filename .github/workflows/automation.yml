@@ -36,17 +36,16 @@ jobs:
           SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
           PYTHONPATH: .
         run: |
-          # সব নেস্টেড ফোল্ডার বাদ দিয়ে সরাসরি রুট ফোল্ডার থেকে ফাইল খুঁজবে এবং `.github` ফোল্ডারকে স্কিন থেকে বাদ রাখবে
-          TARGET_FILE=$(find . -path "*/.github" -prune -o -name "main.py" -print | head -n 1)
+          # রুট বা যেকোনো ফোল্ডার থেকে main.py খুঁজে বের করার বিকল্প ও নিশ্চিত কমান্ড
+          MAIN_SCRIPT=$(find . -name "main.py" | head -n 1)
           
-          if [ -z "$TARGET_FILE" ]; then
-            echo "Error: main.py not found in the repository!"
+          if [ -z "$MAIN_SCRIPT" ]; then
+            echo "Error: main.py truly not found in the repository!"
             exit 1
           fi
           
-          echo "Found main.py at: $TARGET_FILE"
-          DIR_PATH=$(dirname "$TARGET_FILE")
-          echo "Moving to directory: $DIR_PATH and running..."
-          cd "$DIR_PATH"
+          echo "Found main.py at: $MAIN_SCRIPT"
+          SCRIPT_DIR=$(dirname "$MAIN_SCRIPT")
+          cd "$SCRIPT_DIR"
           python main.py
           
