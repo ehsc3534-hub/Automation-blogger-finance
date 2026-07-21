@@ -25,7 +25,7 @@ jobs:
       - name: Install Dependencies
         run: pip install -r requirements.txt
 
-      - name: Run Automation Pipeline
+      - name: Find and Run Main Script
         env:
           BLOGGER_BLOG_ID: ${{ secrets.BLOGGER_BLOG_ID }}
           GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
@@ -35,5 +35,12 @@ jobs:
           GENERIC_TEXT_API_KEY: ${{ secrets.GENERIC_TEXT_API_KEY }}
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
-        run: python main.py
-        
+        run: |
+          MAIN_PATH=$(find . -name "main.py" -print -quit)
+          if [ -z "$MAIN_PATH" ]; then
+            echo "Error: main.py not found anywhere in the repository!"
+            exit 1
+          fi
+          echo "Found main.py at: $MAIN_PATH"
+          python "$MAIN_PATH"
+          
