@@ -36,4 +36,4 @@ jobs:
           SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
           PYTHONPATH: .
         run: python main.py
-        
+
