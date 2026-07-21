@@ -41,6 +41,8 @@ jobs:
             echo "Error: main.py not found!"
             exit 1
           fi
-          echo "Running $TARGET_FILE"
-          python "$TARGET_FILE"
+          DIR_PATH=$(dirname "$TARGET_FILE")
+          echo "Found main.py in $DIR_PATH. Running it..."
+          cd "$DIR_PATH"
+          python main.py
           
